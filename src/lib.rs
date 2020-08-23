@@ -1,3 +1,5 @@
+use std::env;
+use std::ffi::OsString;
 use std::path::PathBuf;
 
 use anyhow::Result;
@@ -81,10 +83,14 @@ impl Orogene {
         Ok(())
     }
 
-    pub async fn load() -> Result<()> {
+    pub async fn load_from<I, T>(itr: I) -> Result<()>
+    where
+        I: IntoIterator<Item = T>,
+        T: Into<OsString> + Clone,
+    {
         let start = std::time::Instant::now();
         let clp = Orogene::into_app();
-        let matches = clp.get_matches();
+        let matches = clp.get_matches_from(itr);
         let mut oro = Orogene::from_arg_matches(&matches);
         let cfg = if let Some(file) = &oro.config {
             OroConfigOptions::new()
@@ -98,6 +104,10 @@ impl Orogene {
         oro.execute().await?;
         log::info!("Ran in {}s", start.elapsed().as_millis() as f32 / 1000.0);
         Ok(())
+    }
+
+    pub async fn load_from_env() -> Result<()> {
+        Self::load_from(&mut env::args_os()).await
     }
 }
 
