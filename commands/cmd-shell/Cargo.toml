@@ -10,7 +10,7 @@ edition = "2018"
 oro-command = { path = "../../crates/oro-command" }
 oro-config = { path = "../../crates/oro-config" }
 oro-error-code = { path = "../../crates/oro-error-code" }
-clap = { git = "https://github.com/zkat/clap" }
+clap = { path = "../../crates/clap" }
 
 anyhow = "1.0.25"
 async-trait = "0.1.19"
